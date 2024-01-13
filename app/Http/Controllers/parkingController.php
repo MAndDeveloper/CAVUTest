@@ -19,6 +19,14 @@ class parkingController extends Controller
     public function book(Request $request)
     {
         $input = json_decode($request->json()->all());
+
+        $parking = new Parking;
+        $parking->start = $input->arrival;
+        $parking->end = $input->leaving;
+        $parking->price = priceCalc($input->arrival, $input->leaving);
+        $parking->registration = $input->registration;
+        $parking->save();
+
     }
 
     public function cancel(Request $request)
@@ -63,10 +71,9 @@ class parkingController extends Controller
             }
         }
 
-        $costs = array(
-            'weekdayCost' => $weekdayCount * $prices['weekdayPrice'],
-            'weekendCost' => $weekendCount * $prices['weekendPrice']
-        )
+        $costs = (
+            $weekdayCount * $prices['weekdayPrice']) + ($weekendCount * $prices['weekendPrice']
+        );
 
         return $costs;
     }
