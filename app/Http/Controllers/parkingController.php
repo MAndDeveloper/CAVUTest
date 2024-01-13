@@ -46,10 +46,21 @@ class parkingController extends Controller
 
     public function edit(Request $request)
     {
+        // Request to include new and old details allowing broader changes (reg or date)
         $input = json_decode($request->json()->all());
 
         // Calculate new parking cost.
-        priceCalc($input->arrival, $input->leaving);
+        $newPrice = priceCalc($input->arrival, $input->leaving);
+
+        // Use Eloquent Update to ammend database record.
+        Parking::where('registration', $input->registration)
+            ->where('start', $input->oldStart)
+            ->update([
+                'price' => $newPrice,
+                'registration' => $newReg,
+                'start' => $input->arrival,
+                'end' => $input->leaving
+            ]);
     }
 
     public function priceCalc($arrival, $leaving)
@@ -81,5 +92,21 @@ class parkingController extends Controller
         $costs = ($weekdayCount * $priceset->costday) + ($weekendCount * $priceset->costend);
 
         return $costs;
+    }
+
+    public function spaceCheck($arrival, $leaving)
+    {
+        // Check parking table to ensure a space is availible
+        // so as not to go over the 10 space maximum during dates given
+
+        $number = DateRange::whereBetween('start_date', [$givenStartDate, $givenEndDate])
+            ->whereBetween('end_date', [$givenStartDate, $givenEndDate])
+            ->count();
+
+        if ($number <= 10) {
+            return true;
+        } else {
+            return false
+        }
     }
 }
