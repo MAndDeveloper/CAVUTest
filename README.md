@@ -13,7 +13,7 @@ Model for a "Space" to be created with base conditions;
 Lisence Plate
 Start date
 End date
-Pricing used (join to pricing table)
+Pricing
 Model for Pricing;
 Weekend/day/season.
 

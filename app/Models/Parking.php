@@ -8,14 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Parking extends Model
 {
     use HasFactory;
-
     
     protected $fillable = [
         'start',
         'end',
         'registration',
         'price',
-        'start',
-        'end'
     ];
 }
