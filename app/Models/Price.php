@@ -15,7 +15,8 @@ class Price extends Model
     protected $fillable = [
         'start',
         'end',
-        'cost'
+        'costday',
+        'costend'
     ];
 
 }
