@@ -16,7 +16,8 @@ return new class extends Migration
             $table->timestamps();
             $table->dateTime('start');
             $table->dateTime('end');
-            $table->float('cost');
+            $table->float('weekday_cost');
+            $table->float('weekend_cost');
         });
     }
 
