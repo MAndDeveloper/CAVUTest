@@ -15,22 +15,28 @@ class parkingController extends Controller
 
         // Simple run through price calculation function, return price
         return priceCalc($input->arrival, $input->leaving);
-    }
+    };
 
     public function book(Request $request)
     {
         $input = json_decode($request->json()->all());
+        $startDate = Carbon::parse($arrival);
+        $endDate = Carbon::parse($leaving);
 
-        // Set fillables in model, use model to save to appropriate table
-        $parking = new Parking;
-        $parking->start = $input->arrival;
-        $parking->end = $input->leaving;
-        $parking->price = priceCalc($input->arrival, $input->leaving);
-        $parking->registration = $input->registration;
-        $parking->save();
+        if (spaceCounter($startDate, $endDate) >= 10) {
+            return "Bookings full";
+        } else {
+            // Set fillables in model, use model to save to appropriate table
+            $parking = new Parking;
+            $parking->start = $input->arrival;
+            $parking->end = $input->leaving;
+            $parking->price = priceCalc($input->arrival, $input->leaving);
+            $parking->registration = $input->registration;
+            $parking->save();
 
-        return "Success"
-    }
+            return "Success";
+        }
+    };
 
     public function cancel(Request $request)
     {
@@ -42,7 +48,7 @@ class parkingController extends Controller
             ->delete();
 
         return "Success"
-    }
+    };
 
     public function edit(Request $request)
     {
@@ -61,7 +67,15 @@ class parkingController extends Controller
                 'start' => $input->arrival,
                 'end' => $input->leaving
             ]);
-    }
+    };
+
+    public function cost(Request $request) {
+
+        $input = json_decode($request->json()->all());
+        
+        return priceCalc($input->arrival, $input->leaving);
+
+    };
 
     public function priceCalc($arrival, $leaving)
     {
@@ -92,21 +106,42 @@ class parkingController extends Controller
         $costs = ($weekdayCount * $priceset->costday) + ($weekendCount * $priceset->costend);
 
         return $costs;
-    }
+    };
 
-    public function spaceCheck($arrival, $leaving)
+    public function spaceCheck(Request $request)
     {
+        $input = json_decode($request->json()->all());
+        $startDate = Carbon::parse($arrival);
+        $endDate = Carbon::parse($leaving);
+
         // Check parking table to ensure a space is availible
         // so as not to go over the 10 space maximum during dates given
 
-        $number = DateRange::whereBetween('start_date', [$givenStartDate, $givenEndDate])
-            ->whereBetween('end_date', [$givenStartDate, $givenEndDate])
-            ->count();
+        $count = spaceCounter($startDate, $endDate);
 
-        if ($number <= 10) {
-            return true;
+        if ($count < 10) {
+            return "There are " . $count . " spaces";
         } else {
             return false
         }
-    }
+    };
+
+    public function spaceCounter($startDate, $endDate)
+    {
+        $number = Parking::where(function ($query) use ($startDate, $endDate) {
+            // Check for overlap when given start date is within the range
+            $query->where('start_date', '<=', $startDate)
+                    ->where('end_date', '>=', $startDate);
+        })->orWhere(function ($query) use ($startDate, $endDate) {
+            // Check for overlap when given end date is within the range
+            $query->where('start_date', '<=', $endDate)
+                    ->where('end_date', '>=', $endDate);
+        })->orWhere(function ($query) use ($startDate, $endDate) {
+            // Check for overlap when given range is entirely within the range
+            $query->where('start_date', '>=', $startDate)
+                    ->where('end_date', '<=', $endDate);
+        })->count();
+
+        return $number;
+    };
 }
