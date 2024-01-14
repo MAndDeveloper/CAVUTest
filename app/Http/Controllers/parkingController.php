@@ -15,7 +15,7 @@ class parkingController extends Controller
 
         // Simple run through price calculation function, return price
         return priceCalc($input->arrival, $input->leaving);
-    };
+    }
 
     public function book(Request $request)
     {
@@ -36,7 +36,7 @@ class parkingController extends Controller
 
             return "Success";
         }
-    };
+    }
 
     public function cancel(Request $request)
     {
@@ -48,7 +48,7 @@ class parkingController extends Controller
             ->delete();
 
         return "Success"
-    };
+    }
 
     public function edit(Request $request)
     {
@@ -67,7 +67,7 @@ class parkingController extends Controller
                 'start' => $input->arrival,
                 'end' => $input->leaving
             ]);
-    };
+    }
 
     public function cost(Request $request) {
 
@@ -106,7 +106,7 @@ class parkingController extends Controller
         $costs = ($weekdayCount * $priceset->costday) + ($weekendCount * $priceset->costend);
 
         return $costs;
-    };
+    }
 
     public function spaceCheck(Request $request)
     {
@@ -124,7 +124,7 @@ class parkingController extends Controller
         } else {
             return false
         }
-    };
+    }
 
     public function spaceCounter($startDate, $endDate)
     {
@@ -143,5 +143,5 @@ class parkingController extends Controller
         })->count();
 
         return $number;
-    };
+    }
 }
