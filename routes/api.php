@@ -27,5 +27,7 @@ Route::controller(parkingController::class)->group(
         Route::post('/parking', 'book');
         Route::delete('/parking', 'cancel');
         Route::put('/parking', 'edit');
+        Route::get('/check', 'spaceCheck');
+        Route::get('/cost', 'cost');
     }
 );
