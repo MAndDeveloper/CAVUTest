@@ -32,3 +32,15 @@ If less than 10 are present, count number below.
 Date formatting and checking should be simple with basic Carbon usage.
 
 Carbon::betweenIncluded will be vital.
+
+## Notes on Solutions
+
+Assumed inputs will be uniform JSON objects. For instance a DELETE request to /parking would be formatted as
+
+```
+{
+  "registration": "XX55 X55",
+  "arrival": 05.10.2024
+}
+
+```
