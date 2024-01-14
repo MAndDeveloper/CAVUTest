@@ -44,3 +44,16 @@ Assumed inputs will be uniform JSON objects. For instance a DELETE request to /p
 }
 
 ```
+
+### Final notes
+Please ignore present dockerfiles, empty repo was copied from previous application.
+
+Included work;
+
+2x Migrations
+
+2x Models
+
+1x Controller
+
+1x Routing File
