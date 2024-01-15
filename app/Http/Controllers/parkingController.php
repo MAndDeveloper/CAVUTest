@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class parkingController extends Controller
 {
-    public function pricing(Request $request)
+    public function price(Request $request)
     {
         $input = json_decode($request->json()->all());
 
@@ -68,14 +68,6 @@ class parkingController extends Controller
                 'end' => $input->leaving
             ]);
     }
-
-    public function cost(Request $request) {
-
-        $input = json_decode($request->json()->all());
-        
-        return priceCalc($input->arrival, $input->leaving);
-
-    };
 
     public function priceCalc($arrival, $leaving)
     {

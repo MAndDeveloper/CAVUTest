@@ -23,11 +23,15 @@ Route::middleware('auth:sanctum')->get(
 
 Route::controller(parkingController::class)->group(
     function () {
+        // Fetch prices for days
         Route::get('/pricing', 'price');
+        // Book Parking
         Route::post('/parking', 'book');
+        // Cancel Parking
         Route::delete('/parking', 'cancel');
+        // Edit Booking
         Route::put('/parking', 'edit');
+        // Check for Spaces Availible
         Route::get('/check', 'spaceCheck');
-        Route::get('/cost', 'cost');
     }
 );
